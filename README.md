@@ -17,6 +17,7 @@ The ticker symbols can be modified through the menu (discussed below).
 **Menu Functionality**
 
 Accessing Menu
+
 The menu can be opened by clicking the menu(!) button in the bottom right cornner.
 Any updates made through the menu will not be displayed in the Ticker Tape until
 a timed call to the Yahoo finance api is made. (Default Refresh Time = 1 min)
@@ -24,11 +25,13 @@ a timed call to the Yahoo finance api is made. (Default Refresh Time = 1 min)
 ![](ScreenShots/Menu.JPG)
 
 Adding Ticker Symbols
+
 Enter desired symbol in the input box and click 'Add Ticker'.
 The menu should automatically resize and update, incorporating the new symbol.
 If the symbol is already in the ticker list, it will not be added.
 
 Removing Ticker Symbols
+
 Ticker symbols can be removed by pressing the remove button adjacent to the symbol 
 #
 

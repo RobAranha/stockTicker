@@ -1,6 +1,7 @@
 # stockTicker
 #
-Ticker Functionality
+**Ticker Functionality**
+
 On initalization, a bar will be drawn above windows taskbar with two buttons on the right side: Menu(!), and Close(X).
 
 ![](ScreenShots/Inital%20Display.JPG)
@@ -13,7 +14,7 @@ Data will be displayed on the ticker tape in the format [Sym, Mkt Price, Daily C
 The ticker symbols can be modified through the menu (discussed below).
 #
 
-Menu Functionality
+**Menu Functionality**
 
 Accessing Menu
 The menu can be opened by clicking the menu(!) button in the bottom right cornner.
@@ -31,8 +32,9 @@ Removing Ticker Symbols
 Ticker symbols can be removed by pressing the remove button adjacent to the symbol 
 #
 
-Instructions
+**Instructions**
 
 Insure that python 3 and all dependencies are installed
-run __init__.py
+
+Run __init__.py
 

@@ -34,6 +34,7 @@ setup(
     author_email='rearanha@uwaterloo.ca',
     url='https://github.com/RobAranha/stockTicker',
     license='Apache',
+    python_requires='~=3.6',
     py_modules=['DataFetcher', 'PickStocks', 'Ticker'],
     packages=['StockTicker'],
     scripts=['__init__'],

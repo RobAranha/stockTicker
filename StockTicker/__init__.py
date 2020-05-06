@@ -17,8 +17,16 @@
 
 from StockTicker.DataFetcher import getAllStockData
 from StockTicker.Ticker import TickerTape
+import os
 
+# Set working directory to read in data file ...StockTicker\
+abspath = os.path.abspath(__file__)
+directory = os.path.dirname(abspath).rpartition("\\")[0]
+os.chdir(directory)
 
+# Fetch Data
 data = getAllStockData()
+
+# Initialize ticker tape
 app = TickerTape(data)
 app.mainloop()

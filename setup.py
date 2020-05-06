@@ -28,7 +28,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='StockTicker',
     version='1.0.0',
-    description='Add stock ticker above desktop tool bar',
+    description='Simple stock ticker using tkinter and yfinance api',
     long_description=long_description,
     author='Robert Aranha',
     author_email='rearanha@uwaterloo.ca',

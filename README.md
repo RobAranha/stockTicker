@@ -1,4 +1,7 @@
 # stockTicker
+
+A simple stock ticker using tkinter and yfinance api
+
 ## Ticker Functionality
 
 **Initalization**

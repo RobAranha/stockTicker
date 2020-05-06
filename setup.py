@@ -32,13 +32,33 @@ setup(
     long_description=long_description,
     author='Robert Aranha',
     author_email='rearanha@uwaterloo.ca',
-    license='GNU GPLv3',
-    py_modules=['DataFetcher', 'PickStocks'],
+    url='https://github.com/RobAranha/stockTicker',
+    license='Apache',
+    py_modules=['DataFetcher', 'PickStocks', 'Ticker'],
     packages=['StockTicker'],
+    scripts=['__init__'],
+    data_files=['data.txt'],
     install_requires=[
-        'numpy',
-        'yfinance',
-        'pandas-datareader',
-        'datetime'
+        'certifi==2020.4.5.1',
+        'chardet==3.0.4',
+        'DateTime==4.3',
+        'idna==2.9',
+        'lxml==4.5.0',
+        'multitasking==0.0.9',
+        'numpy==1.18.4',
+        'pandas==1.0.3',
+        'pandas-datareader==0.8.1',
+        'python-dateutil==2.8.1',
+        'pytz==2020.1',
+        'requests==2.23.0',
+        'six==1.14.0',
+        'urllib3==1.25.9',
+        'yfinance==0.1.54',
+        'zope.interface==5.1.0'
+    ],
+    classifiers = [
+        'Development Status :: 4 -Beta',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: Microsoft :: Windows :: Windows 10'
     ]
 )

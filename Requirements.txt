@@ -1,0 +1,5 @@
+yfinance
+numpy
+pandas
+pandas-datareader
+DateTime

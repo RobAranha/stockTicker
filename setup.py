@@ -15,14 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from setuptools import setup, find_packages
+from setuptools import setup
 from codecs import open
 from os import path
 
 here = path.abspath(path.dirname(__file__))
 
 # Populate long description from README
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
@@ -34,11 +34,7 @@ setup(
     author_email='rearanha@uwaterloo.ca',
     url='https://github.com/RobAranha/stockTicker',
     license='Apache',
-    python_requires='=3.4,=3.5,=3.6,=3.7',
-    py_modules=['DataFetcher', 'PickStocks', 'Ticker'],
-    packages=['StockTicker'],
-    scripts=['__init__'],
-    data_files=['data.txt'],
+    python_requires='>=3.4',
     install_requires=[
         'certifi==2020.4.5.1',
         'chardet==3.0.4',

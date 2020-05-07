@@ -43,5 +43,5 @@ Ticker symbols can be removed by pressing the remove button adjacent to the symb
 
 Insure that python 3 and all dependencies are installed
 
-Run __init__.py
+Run main.py
 

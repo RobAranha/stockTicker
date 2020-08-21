@@ -1,0 +1,1 @@
+{"speed": "0.2", "update_frequency": "20", "send_emails": "False", "from_address": "StockTicker@Outlook.com", "to_address": "StockTicker@Outlook.com", "password_location": "C:\\Users\\robbi\\Desktop\\temp\\myPass.txt", "upswing_threshold": "0.02"}

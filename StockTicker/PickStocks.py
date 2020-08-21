@@ -21,6 +21,7 @@ import ctypes
 from StockTicker.DataFetcher import pull_ticker_list
 from StockTicker.DataFetcher import remove_ticker
 from StockTicker.DataFetcher import add_ticker
+from StockTicker.AdvancedMenu import open_adv_menu
 
 
 def openMenu(root):
@@ -37,20 +38,25 @@ def openMenu(root):
 
             # set size and position
             user32 = ctypes.windll.user32
-            height = 80 + len(self.ticker_list) * 21
+            height = 85 + len(self.ticker_list) * 25
             screen_size = '135x' + str(height)
             screen_position = '+' + str(user32.GetSystemMetrics(0) - 145) + '+' + str(
                 user32.GetSystemMetrics(1) - height - 95)
             self.geometry(screen_size + screen_position)
 
+            self.winfo_toplevel().title("Menu")
+
             # Build header information
             input_label = tk.Label(self, text="Ticker Symbol:")
             self.input_box = tk.Entry(self, width=10)
-            my_button = tk.Button(self, text="Add Ticker", command=self.add_ticker(root))
+            my_button = tk.Button(self, text="Add Ticker", command=lambda: self.add_ticker(root))
             input_label.grid(row=0, column=0)
             self.input_box.grid(row=1, column=0)
             my_button.grid(row=2, column=0)
             self.bind("<Return>", (lambda event: self.add_ticker(root)))
+
+            advanced_button = tk.Button(self, text="Adv.", command=lambda: self.open_advanced())
+            advanced_button.grid(row=1, column=1)
 
             self.stocks = {}
             self.del_buttons = {}
@@ -114,6 +120,9 @@ def openMenu(root):
                 add_ticker(ticker)
                 # Refresh Data
                 root.refresh_data()
+
+        def open_advanced(self):
+            open_adv_menu()
 
     app = StockMenu()
     app.mainloop()

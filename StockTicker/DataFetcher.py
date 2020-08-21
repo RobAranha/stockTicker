@@ -19,11 +19,12 @@ import numpy as np
 import yfinance as yf
 from datetime import datetime, timedelta
 import sqlite3 as sql
+from StockTicker.AdvancedMenu import load_settings
 from StockTicker.statusMessages import check_email_updates
 from pandas_datareader import data as pdr
-
 import os
 import time
+
 
 yf.pdr_override()
 
@@ -46,15 +47,13 @@ def get_stock_data(stock, data):
     rows = len(df.index)
     # Change how data is being returned to be more fluent
     stock_close = np.zeros(len(stock))
-    stock_open = np.zeros(len(stock))
+    stock_prev_close = np.zeros(len(stock))
     for col in df:
-        #print(df.columns.get_loc(col))
         if col[0] == "Adj Close":
             stock_close[stock.index(col[1])] = df[col].tolist()[rows - 1]
-        if col[0] == "Open":
-            stock_open[stock.index(col[1])] = df[col].tolist()[rows - 1]
+            stock_prev_close[stock.index(col[1])] = df[col].tolist()[0]
 
-    stock_diff = np.subtract(stock_close, stock_open)
+    stock_diff = np.subtract(stock_close, stock_prev_close)
     # Round to 2 decimals
     stock_close = np.around(stock_close, decimals=2)
     stock_diff = np.around(stock_diff, decimals=2)
@@ -111,7 +110,7 @@ def get_all_stock_data():
     ticker_list = pull_ticker_list()
     data = np.array([[],[],[]])             #[Ticker symbol, market price, daily change]
     check_email_updates.email_wait_time = timedelta(hours=1)
-    count = 0
+
     # Loop through each element in tickerList,
     # pulling market information and filling data array
     if isinstance(ticker_list, list):
@@ -119,10 +118,12 @@ def get_all_stock_data():
     else:
         data = get_stock_data(ticker_list, data)
 
-    try:
-        check_email_updates.last_email_time
-    except:
-        check_email_updates.last_email_time = datetime.now() - check_email_updates.email_wait_time
-    check_email_updates(data)
-    print(data)
+    # Check for email updates
+    settings = load_settings()
+    if settings['send_emails'] == "True":
+        try:
+            check_email_updates.last_email_time
+        except:
+            check_email_updates.last_email_time = datetime.now() - check_email_updates.email_wait_time
+        check_email_updates(data)
     return data

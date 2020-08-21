@@ -21,12 +21,12 @@ import threading
 import tkinter as tk
 from StockTicker.PickStocks import openMenu
 from StockTicker.DataFetcher import get_all_stock_data
+from StockTicker.AdvancedMenu import load_settings
+
+font_type = ("Arial", 12, "bold")
 
 def thread_second(obj):
     obj.data = get_all_stock_data()
-
-
-font_type = ("Arial", 12, "bold")
 
 class minButton(tk.Tk):
     def __init__(self, tape, *args, **kwargs):
@@ -59,6 +59,9 @@ class TickerTape(tk.Tk):
     def __init__(self, data, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
+        #Fetch settings data
+        settings = load_settings()
+
         #set size and position
         user32 = ctypes.windll.user32
         screen_size = str(user32.GetSystemMetrics(0)) + 'x25'
@@ -76,8 +79,9 @@ class TickerTape(tk.Tk):
         self.overrideredirect(1)
         self.attributes("-topmost", True)
 
-        #set movement speed in x and y direction, and time
-        self.x = 0.5
+        #set movement speed in x and y direction, time, and update frequency
+        self.x = float(settings['speed'])
+        self.update_frequency = float(settings['update_frequency']) * 1000
         self.y = 0
         self.time = 0
 
@@ -134,7 +138,7 @@ class TickerTape(tk.Tk):
 
         # Refresh data on time interval
         self.time = self.time + 15
-        if self.time > 15000:
+        if self.time >  self.update_frequency:
             self.refresh_data()
 
         # call movement after delay

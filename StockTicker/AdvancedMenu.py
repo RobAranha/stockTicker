@@ -1,0 +1,153 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Copyright 2020 Robert Aranha
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import numpy as np
+import tkinter as tk
+import ctypes
+import json
+
+
+font= font_header = ("Arial", 12, "bold", "underline")
+font_label = ("Arial", 12)
+settings_file = "settings.json"
+
+def load_settings():
+    settings = open(settings_file)
+    data = json.load(settings)
+    settings.close()
+    return data
+
+
+def open_adv_menu():
+    class adv_menu(tk.Tk):
+        def __init__(self, *args, **kwargs):
+            tk.Tk.__init__(self, *args, **kwargs)
+
+            #fetch settings data
+            data = load_settings()
+            #set size and position
+            user32 = ctypes.windll.user32
+            screen_width = user32.GetSystemMetrics(0)
+            screen_height = user32.GetSystemMetrics(1)
+            screen_size = '375x410'
+            screen_position = '+' + str(int(screen_width/2)) + '+' + str(int(screen_height / 5))
+            self.geometry(screen_size + screen_position)
+
+            #set background colors
+            #self.configure(background='black')
+            self.winfo_toplevel().title("Advanced Menu")
+
+            #Build canvas objects
+            self.header = tk.Label(self, text="Advanced Menu", font= ("Arial", 14, "bold", "underline"))
+
+            self.label_blank1 = tk.Label(self, text="")
+            self.header_general_controls = tk.Label(self, text="General Controls", font= font_header)
+            self.label_speed = tk.Label(self, text="Speed", font= font_label)
+            self.input_speed = tk.Entry(self, width=10)
+            self.label_update_frequency = tk.Label(self, text="Update Frequency", font= font_label)
+            self.input_update_frequency = tk.Entry(self, width=10)
+            self.label_send_emails = tk.Label(self, text="   Send Emails (True/False)   ", font= font_label)
+            self.input_send_emails = tk.Entry(self, width=10)
+            #self.label_ticker_colour = tk.Label(self, text="Ticker Colour", font= font_label)
+            #self.input_ticker_colour = tk.Entry(self, width=10)
+            #self.label_ticker_background_colour = tk.Label(self, text="Ticker Background Colour", font= font_label)
+            #self.input_ticker_background_colour = tk.Entry(self, width=10)
+
+            self.label_blank2 = tk.Label(self, text="")
+            self.header_email_controls = tk.Label(self, text="Email Controls", font= font_header)
+            self.label_from_address = tk.Label(self, text="From Address", font= font_label)
+            self.input_from_address = tk.Entry(self, width=25)
+            self.label_to_address = tk.Label(self, text="To Address", font= font_label)
+            self.input_to_address = tk.Entry(self, width=25)
+            self.label_password_location = tk.Label(self, text="Password Location", font= font_label)
+            self.input_password_location = tk.Entry(self, width=25)
+
+            self.label_blank3 = tk.Label(self, text="")
+            self.header_email_alerts = tk.Label(self, text="Email Alerts", font= font_header)
+            self.label_upswing = tk.Label(self, text="Upswing Threashold (%)", font= font_label)
+            self.input_upswing = tk.Entry(self, width=10)
+
+            self.label_blank4 = tk.Label(self, text="")
+            self.save_button = tk.Button(self, text="Save", font=font_label, command=lambda: self.save())
+            self.label_save_status= tk.Label(self, text="", font= font_header)
+
+
+            #Fill canvas
+
+            self.header.grid(row=0, column=1, columnspan=2)
+
+            self.label_blank1.grid(row=1, column=1)
+            self.header_general_controls.grid(row=2, column=1)
+            self.label_speed.grid(row=3, column=1)
+            self.input_speed.grid(row=3, column=2)
+            self.label_update_frequency.grid(row=4, column=1)
+            self.input_update_frequency.grid(row=4, column=2)
+            self.label_send_emails.grid(row=5, column=1)
+            self.input_send_emails.grid(row=5, column=2)
+
+            self.label_blank2.grid(row=6, column=2)
+            self.header_email_controls.grid(row=7, column=1)
+            self.label_from_address.grid(row=8, column=1)
+            self.input_from_address.grid(row=8, column=2)
+            self.label_to_address.grid(row=9, column=1)
+            self.input_to_address.grid(row=9, column=2)
+            self.label_password_location.grid(row=10, column=1)
+            self.input_password_location.grid(row=10, column=2)
+
+            self.label_blank3.grid(row=11, column=1)
+            self.header_email_alerts.grid(row=12, column=1)
+            self.label_upswing.grid(row=13, column=1)
+            self.input_upswing.grid(row=13, column=2)
+
+            self.label_blank4.grid(row=14,column=2)
+
+            self.label_save_status.grid(row=15, column=2)
+            self.save_button.grid(row=15, column=1)
+
+            #Fill settings data
+            self.input_speed.insert(0, data['speed'])
+            self.input_update_frequency.insert(0, data['update_frequency'])
+            self.input_send_emails.insert(0, data['send_emails'])
+            self.input_from_address.insert(0, data['from_address'])
+            self.input_to_address.insert(0, data['to_address'])
+            self.input_password_location.insert(0, data['password_location'])
+            self.input_upswing.insert(0, data['upswing_threshold'])
+
+        def save(self):
+            settings = open(settings_file, 'r')
+            data = json.load(settings)
+            settings.close()
+
+            settings = open(settings_file, 'w')
+            data['speed'] = self.input_speed.get()
+            data['update_frequency'] = self.input_update_frequency.get()
+            data['send_emails'] = self.input_send_emails.get()
+            data['from_address'] = self.input_from_address.get()
+            data['to_address'] = self.input_to_address.get()
+            data['password_location'] = self.input_password_location.get()
+            data['upswing_threshold'] = self.input_upswing.get()
+            json.dump(data, settings)
+            settings.close()
+
+            self.label_save_status['text'] = ""
+            self.label_save_status['text'] = "Save Successful"
+
+
+    app = adv_menu()
+    app.mainloop()
+
+#temp = open_adv_menu()

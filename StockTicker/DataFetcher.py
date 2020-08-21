@@ -17,58 +17,112 @@
 
 import numpy as np
 import yfinance as yf
-import datetime as dt
+from datetime import datetime, timedelta
+import sqlite3 as sql
+from StockTicker.statusMessages import check_email_updates
 from pandas_datareader import data as pdr
 
+import os
+import time
 
 yf.pdr_override()
 
-#pulls data[Ticker symbol, market price, daily change] for selected stock and appends to data array
-def getStockData(stock, data):
+def convert(lst):
+    return ' '.join(lst)
+
+# pulls data[Ticker symbol, market price, daily change] for selected
+# stock and appends to data array
+def get_stock_data(stock, data):
     # set date range for api pull
-    now=dt.datetime.now()
-    if (dt.datetime.today().weekday() == 6):                           # if sunday, pull data for last 48 hours
-        lastDay = now - dt.timedelta(hours=48)
+    now=datetime.now()
+    if (datetime.today().weekday() == 6):        # if sunday, pull data for last 48 hours
+        last_day = now - timedelta(hours=48)
     else:
-        lastDay = now - dt.timedelta(hours=24)
+        last_day = now - timedelta(hours=24)
 
-    # fetch a dataframe from Yahoo finance api for stock from lastDay to now
-    df = pdr.get_data_yahoo(stock, lastDay, now)
-    df.insert(0, "Stock_Name", stock)
-    df["Diff"] = df["Close"].sub(df["Open"], axis = 0)
+    # fetch a dataframe from Yahoo finance apifor stock from lastDay to now
+
+    df = pdr.get_data_yahoo(convert(stock), last_day, now)
     rows = len(df.index)
+    # Change how data is being returned to be more fluent
+    stock_close = np.zeros(len(stock))
+    stock_open = np.zeros(len(stock))
+    for col in df:
+        #print(df.columns.get_loc(col))
+        if col[0] == "Adj Close":
+            stock_close[stock.index(col[1])] = df[col].tolist()[rows - 1]
+        if col[0] == "Open":
+            stock_open[stock.index(col[1])] = df[col].tolist()[rows - 1]
 
-    # parse individual information for last row in data frame
-    stockName = df.iloc[rows-1:rows, 0:1].values.flatten(order='C')
-    stockClose = df.iloc[rows-1:rows, 4:5].values.flatten(order='C')
-    stockDiff = df.iloc[rows - 1:rows, 7:8].values.flatten(order='C')
-
+    stock_diff = np.subtract(stock_close, stock_open)
     # Round to 2 decimals
-    stockClose = np.around(stockClose, decimals=2)
-    stockDiff = np.around(stockDiff, decimals=2)
-
+    stock_close = np.around(stock_close, decimals=2)
+    stock_diff = np.around(stock_diff, decimals=2)
     # Append to data array
-    newData = np.stack((stockName, stockClose, stockDiff))
-    data = np.append(data, newData, axis=1)
+    data = np.array([stock,stock_close,stock_diff])
 
     return data
 
 
-#Returns an array of stock data for all ticker symbols in data.txt
-def getAllStockData():
+def set_directory():
+    # Set working directory to read in data file ...StockTicker\
+    abspath = os.path.abspath(__file__)
+    directory = os.path.dirname(abspath).rpartition("\\")[0]
+    os.chdir(directory)
+
+
+def remove_ticker(sym):
+    set_directory()
+
+    connection = sql.connect("data.db")
+    cursor = connection.cursor()
+    cursor.execute("DELETE from data WHERE Ticker='" + sym + "'")
+    connection.commit()
+    connection.close()
+
+
+def add_ticker(sym):
+    set_directory()
+
+    connection = sql.connect("data.db")
+    cursor = connection.cursor()
+    cursor.execute("INSERT INTO data VALUES ('" + sym + "');")
+    connection.commit()
+    connection.close()
+
+
+# Returns a list of all ticker symbols in data.db
+def pull_ticker_list():
+    set_directory()
+
     # get ticker list from saved data file, load to tickerList
-    file = 'data.txt'
-    tickerList = np.loadtxt(file, dtype=str)
-    tickerList = tickerList.tolist()
+    connection = sql.connect("data.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM Data")
+    ans = list(cursor.fetchall())
+    ticker_list = [list(i) for i in ans]
+    ticker_list = np.ndarray.flatten(np.array(ticker_list)).tolist()
+    connection.close()
 
-    # data: [Ticker symbol, market price, daily change]
-    data = np.array([[],[],[]])
+    return ticker_list
 
-    # Loop through each element in tickerList, pulling market information and filling data array
-    if isinstance(tickerList, list):
-       for x in tickerList:
-            data = getStockData(x, data)
+# Returns an array of stock data for all ticker symbols in data.txt
+def get_all_stock_data():
+    ticker_list = pull_ticker_list()
+    data = np.array([[],[],[]])             #[Ticker symbol, market price, daily change]
+    check_email_updates.email_wait_time = timedelta(hours=1)
+    count = 0
+    # Loop through each element in tickerList,
+    # pulling market information and filling data array
+    if isinstance(ticker_list, list):
+        data = get_stock_data(ticker_list, data)
     else:
-        data = getStockData(tickerList, data)
+        data = get_stock_data(ticker_list, data)
 
+    try:
+        check_email_updates.last_email_time
+    except:
+        check_email_updates.last_email_time = datetime.now() - check_email_updates.email_wait_time
+    check_email_updates(data)
+    print(data)
     return data

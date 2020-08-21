@@ -15,17 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from StockTicker.DataFetcher import getAllStockData
+from StockTicker.DataFetcher import get_all_stock_data
 from StockTicker.Ticker import TickerTape
-import os
-
-# Set working directory to read in data file ...StockTicker\
-abspath = os.path.abspath(__file__)
-directory = os.path.dirname(abspath).rpartition("\\")[0]
-os.chdir(directory)
 
 # Fetch Data
-data = getAllStockData()
+data = get_all_stock_data()
 
 # Initialize ticker tape
 app = TickerTape(data)

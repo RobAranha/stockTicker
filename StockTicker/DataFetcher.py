@@ -23,27 +23,34 @@ from StockTicker.AdvancedMenu import load_settings
 from StockTicker.statusMessages import check_email_updates
 from pandas_datareader import data as pdr
 import os
-import time
-
 
 yf.pdr_override()
 
 def convert(lst):
     return ' '.join(lst)
 
+
 # pulls data[Ticker symbol, market price, daily change] for selected
 # stock and appends to data array
 def get_stock_data(stock, data):
     # set date range for api pull
     now=datetime.now()
-    if (datetime.today().weekday() == 6):        # if sunday, pull data for last 48 hours
-        last_day = now - timedelta(hours=48)
-    else:
-        last_day = now - timedelta(hours=24)
+    time_delay = 24
+    if (now.weekday() == 5):        # if sunday, pull data for last 48 hours
+       time_delay = time_delay + 24
+    elif (now.weekday() == 6):  # if sunday, pull data for last 48 hours
+       time_delay = time_delay + 48
+    elif (now.weekday() == 0):  # if sunday, pull data for last 48 hours
+       time_delay = time_delay + 48
+
+    if now.time().hour >= 16:
+        time_delay = time_delay + 24
+
+    last_day = now - timedelta(hours=time_delay)
 
     # fetch a dataframe from Yahoo finance apifor stock from lastDay to now
-
     df = pdr.get_data_yahoo(convert(stock), last_day, now)
+
     rows = len(df.index)
     # Change how data is being returned to be more fluent
     stock_close = np.zeros(len(stock))
@@ -63,6 +70,7 @@ def get_stock_data(stock, data):
     return data
 
 
+# Chnages the working directory to the current file directory
 def set_directory():
     # Set working directory to read in data file ...StockTicker\
     abspath = os.path.abspath(__file__)
@@ -70,6 +78,7 @@ def set_directory():
     os.chdir(directory)
 
 
+# Removes sym from the database file
 def remove_ticker(sym):
     set_directory()
 
@@ -80,6 +89,7 @@ def remove_ticker(sym):
     connection.close()
 
 
+# Adds sym to the database file
 def add_ticker(sym):
     set_directory()
 
@@ -105,11 +115,13 @@ def pull_ticker_list():
 
     return ticker_list
 
+
 # Returns an array of stock data for all ticker symbols in data.txt
 def get_all_stock_data():
     ticker_list = pull_ticker_list()
-    data = np.array([[],[],[]])             #[Ticker symbol, market price, daily change]
-    check_email_updates.email_wait_time = timedelta(hours=1)
+    settings = load_settings()
+    data = np.array([[],[],[]])
+    check_email_updates.email_wait_time = timedelta(minutes=int(settings['email_frequency']))
 
     # Loop through each element in tickerList,
     # pulling market information and filling data array
@@ -119,7 +131,6 @@ def get_all_stock_data():
         data = get_stock_data(ticker_list, data)
 
     # Check for email updates
-    settings = load_settings()
     if settings['send_emails'] == "True":
         try:
             check_email_updates.last_email_time

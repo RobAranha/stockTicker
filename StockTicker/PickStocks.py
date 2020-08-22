@@ -24,7 +24,7 @@ from StockTicker.DataFetcher import add_ticker
 from StockTicker.AdvancedMenu import open_adv_menu
 
 
-def openMenu(root):
+def open_menu(root):
     class StockMenu(tk.Tk):
         def __init__(self, *args, **kwargs):
             tk.Tk.__init__(self, *args, **kwargs)
@@ -44,7 +44,7 @@ def openMenu(root):
                 user32.GetSystemMetrics(1) - height - 95)
             self.geometry(screen_size + screen_position)
 
-            self.winfo_toplevel().title("Menu")
+            self.winfo_toplevel().title("menu")
 
             # Build header information
             input_label = tk.Label(self, text="Ticker Symbol:")

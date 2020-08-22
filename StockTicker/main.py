@@ -16,11 +16,11 @@
 # limitations under the License.
 
 from StockTicker.DataFetcher import get_all_stock_data
-from StockTicker.Ticker import TickerTape
+from StockTicker.Ticker import ticker_tape
 
 # Fetch Data
 data = get_all_stock_data()
 
 # Initialize ticker tape
-app = TickerTape(data)
+app = ticker_tape(data)
 app.mainloop()

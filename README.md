@@ -12,7 +12,7 @@ On initialization, a bar will be drawn above windows taskbar with three buttons 
 
 ![](ScreenShots/Inital_Display.JPG)
 
-**TickerTape**
+**Application Running**
 
 A list of ticker symbols will be imported from the data.db file and a call through yahoo finance API will be made to fetch current market data.
 Data will be displayed on the ticker tape in the format [Sym : Mkt Price : Daily Change]. The refresh time for the data can be customized through the advanced menu.

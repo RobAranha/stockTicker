@@ -17,7 +17,7 @@
 
 import smtplib
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 from email.message import EmailMessage
 from StockTicker.AdvancedMenu import load_settings
 

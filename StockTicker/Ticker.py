@@ -22,9 +22,10 @@ import tkinter as tk
 from StockTicker.PickStocks import open_menu
 from StockTicker.DataFetcher import get_all_stock_data
 from StockTicker.AdvancedMenu import load_settings
+from StockTicker.DataFetcher import get_time
+from StockTicker.DataFetcher import inc_time
 
 font_type = ("Arial", 12, "bold")
-
 
 class min_button(tk.Tk):
     def __init__(self, tape, *args, **kwargs):
@@ -83,7 +84,7 @@ class ticker_tape(tk.Tk):
         self.x = float(settings['speed'])
         self.update_frequency = float(settings['update_frequency']) * 1000
         self.y = 0
-        self.time = 0
+        self.time = get_time()
 
         # Set additional properties for data storage and ticker symbols
         self.data = data
@@ -107,7 +108,6 @@ class ticker_tape(tk.Tk):
 
         # Move symbols
         self.movement()
-
 
     # Move ticker symbols, and reset position once offscreen
     def movement(self):
@@ -137,13 +137,14 @@ class ticker_tape(tk.Tk):
                 self.symbols[x] = symb
 
         # Refresh data on time interval
-        self.time = self.time + 15
-        if self.time >  self.update_frequency:
+        inc_time(15)
+        self.time = get_time()
+
+        if self.time > self.update_frequency:
             self.refresh_data()
 
         # Call movement after delay
         self.after(15, self.movement)
-
 
     # Refresh all data in second thread and update symbols
     def thread_second(self):
@@ -157,21 +158,17 @@ class ticker_tape(tk.Tk):
             val = sym + " : " + current + " : " + change
             self.canvas.itemconfig(self.symbols[i].txt, text=val)
 
-
     # Functionality for stock data refresh
     def refresh_data(self):
         # Call function to refresh data as a subprocess
-        print("Refreshing")
         process_thread = threading.Thread(target=self.thread_second)
         process_thread.start()
         # Reset time for next update
-        self.time = 0
-
+        inc_time(-1 * get_time())
 
     # Functionality for quit button
     def quit(self):
         sys.exit()
-
 
     # Functionality for menu button
     def menu(self):

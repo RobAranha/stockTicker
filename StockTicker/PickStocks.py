@@ -15,13 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
 import tkinter as tk
 import ctypes
 from StockTicker.DataFetcher import pull_ticker_list
 from StockTicker.DataFetcher import remove_ticker
 from StockTicker.DataFetcher import add_ticker
 from StockTicker.AdvancedMenu import open_adv_menu
+from StockTicker.Details import open_details
 
 
 def open_menu(root):
@@ -35,15 +35,6 @@ def open_menu(root):
             if not isinstance(self.ticker_list, list):
                 new_arr = [self.ticker_list]
                 self.ticker_list = new_arr
-
-            # set size and position
-            user32 = ctypes.windll.user32
-            height = 85 + len(self.ticker_list) * 25
-            screen_size = '135x' + str(height)
-            screen_position = '+' + str(user32.GetSystemMetrics(0) - 145) + '+' + str(
-                user32.GetSystemMetrics(1) - height - 95)
-            self.geometry(screen_size + screen_position)
-
             self.winfo_toplevel().title("menu")
 
             # Build header information
@@ -55,22 +46,21 @@ def open_menu(root):
             my_button.grid(row=2, column=0)
             self.bind("<Return>", (lambda event: self.add_ticker(root)))
 
-            advanced_button = tk.Button(self, text="Adv.", command=lambda: self.open_advanced())
-            advanced_button.grid(row=1, column=1)
+            advanced_button = tk.Button(self, text="Advanced", command=lambda: self.open_advanced())
+            advanced_button.grid(row=1, column=1, columnspan=2)
 
             self.stocks = {}
             self.del_buttons = {}
+            self.detail_buttons = {}
 
             # update menu
             self.update_display(root)
-
 
         # clears all ticker symbols from menu
         def clear(self):
             for x in self.grid_slaves():
                 if int(x.grid_info()["row"]) > 2:
                     x.grid_forget()
-
 
         # deletes a single symbol at given row
         def del_stock(self, row, root):
@@ -79,6 +69,8 @@ def open_menu(root):
             self.update_display(root)  # update list
             root.refresh_data()
 
+        def details(self, stock):
+            open_details(stock)
 
         # clears all ticker symbols, adds all symbols stored in ticker_list to menu, and resizes menu
         def update_display(self, root):
@@ -95,15 +87,18 @@ def open_menu(root):
                 del_button = tk.Button(self, text="Remove", command=lambda row=x: self.del_stock(row, root))
                 self.del_buttons[x] = del_button
                 self.del_buttons[x].grid(row=x + 3, column=1)
+                # add details button
+                detail_button = tk.Button(self, text="Details", command=lambda row=x: self.details(self.ticker_list[row]))
+                self.detail_buttons[x] = detail_button
+                self.detail_buttons[x].grid(row=x + 3, column=2)
 
             # resize menu for new row
             user32 = ctypes.windll.user32
-            height = 80 + len(self.ticker_list) * 25
-            screen_size = '135x' + str(height)
-            screen_position = '+' + str(user32.GetSystemMetrics(0) - 145) + '+' + str(
+            height = 85 + len(self.ticker_list) * 25
+            screen_size = '185x' + str(height)
+            screen_position = '+' + str(user32.GetSystemMetrics(0) - 194) + '+' + str(
                 user32.GetSystemMetrics(1) - height - 95)
             self.geometry(screen_size + screen_position)
-
 
         # get user input from inputBox, add ticker symbol to ticker_list, and save data
         def add_ticker(self, root):

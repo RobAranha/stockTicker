@@ -71,7 +71,7 @@ def open_adv_menu():
             self.input_to_address = tk.Entry(self, width=30)
             self.label_password_location = tk.Label(self, text="Password Location", font= font_label)
             self.input_password_location = tk.Entry(self, width=30)
-            self.label_email_frequency = tk.Label(self, text="Email Frequency (Seconds)", font= font_label)
+            self.label_email_frequency = tk.Label(self, text="Email Frequency (Minutes)", font= font_label)
             self.input_email_frequency = tk.Entry(self, width=10)
             self.label_email_start_time = tk.Label(self, text="Email Start Time (Hours)", font= font_label)
             self.input_email_start_time = tk.Entry(self, width=10)

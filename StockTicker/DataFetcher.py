@@ -5,7 +5,7 @@
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# You may obtain a TO opy of the License at
 #
 #    http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -213,7 +213,7 @@ def get_stock_options(stock_sym):
                 data_row = [parse_date(row[1].contractSymbol, stock_sym),
                             row[1].contractSymbol[len(stock_sym) + 6: len(stock_sym) + 7],
                             row[1].strike, row[1].lastPrice, row[1].bid,
-                            row[1].ask, row[1].change, row[1].percentChange, row[1].volume,
+                            row[1].ask, round(row[1].change, 4), round(row[1].percentChange, 4), row[1].volume,
                             row[1].openInterest, round(row[1].impliedVolatility, 4)]
                 options.append(data_row)
 

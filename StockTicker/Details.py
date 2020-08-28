@@ -32,6 +32,7 @@ font = font_header = ("Arial", 12, "bold")
 font_label = ("Arial", 12)
 
 
+# Opens details for the selected stock, when the corresponding button is pressed in the menu
 def open_details(stock):
     class details(tk.Tk):
         def __init__(self, *args, **kwargs):
@@ -163,6 +164,7 @@ def open_details(stock):
 
             self.refresh()
 
+        # Refreshes data for options and stock prices based on user settings
         def refresh(self):
             if self.option_time > self.options_refresh_time:
                 self.label_options.config(text="Option Quotes - Refreshing")
@@ -179,6 +181,7 @@ def open_details(stock):
                 self.time = self.time + 15
             self.after(15, self.refresh)
 
+        # Filters options data based on filters in details menu
         def filter_options(self):
             type_filter = self.input_type_filter.get()
             date_filter = self.input_date_filter.get()
@@ -204,6 +207,7 @@ def open_details(stock):
                         int(data_subset[i][9]) >= int(settings["min_open_interest"]):
                     self.options.insert("", tk.END, values=data_subset[i])
 
+        # Get data for the selected stock and update menu labels
         def thread_get_stock_data(self, stock):
             try:
                 stock_data = get_high_low_vol(stock)
@@ -226,6 +230,7 @@ def open_details(stock):
             self.label_vol_month.config(text="Vol (1 month): " + vol_month)
             self.label_vol_year.config(text="Vol (1 year): " + vol_year)
 
+        # Get earnings data and update labels
         def thread_get_earnings(self, stock):
             try:
                 earnings = get_stock_earnings(stock)
@@ -233,6 +238,7 @@ def open_details(stock):
                 earnings = "No Data Found"
             self.label_earnings.config(text="Earnings Release: " + earnings)
 
+        # Get dividends data and update labels
         def thread_get_dividends(self, stock):
             try:
                 dividends = get_stock_dividends(stock)
@@ -240,6 +246,7 @@ def open_details(stock):
                 dividends = "No Data Found"
             self.label_dividends.config(text="Dividends: " + dividends)
 
+        # Get stock splits and update labels
         def thread_get_splits(self, stock):
             try:
                 splits = get_stock_splits(stock)
@@ -247,6 +254,7 @@ def open_details(stock):
                 splits = "No Data Found"
             self.label_splits.config(text="Splits: " + splits)
 
+        # Get options data and update treeview
         def thread_get_options(self, stock):
             # Fill objects for options
             try:

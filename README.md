@@ -30,7 +30,7 @@ The ticker symbols can be modified through the menu (discussed below).
 
 ## Minimizing The Display
 To minimize the display, click the minimize button (-) in the bottom right corner.
-The ticker tape will be replaced with a (+) button in the bottom right corner that will restore the ticker tape when pressed.
+The ticker tape will be hidden and a (+) button will appear in the bottom right corner. When pressed it will restore the ticker tape.
 
 ![](ScreenShots/Min.JPG)
 

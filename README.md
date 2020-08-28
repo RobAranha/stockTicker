@@ -1,6 +1,6 @@
 # stockTicker
 
-A stock ticker using tkinter and yfinance
+A stock ticker using tkinter and yfinance.
 
 ![](ScreenShots/Full_Tool.JPG)
 
@@ -81,7 +81,7 @@ It's recommended that an individual email account is set up for this application
 
 ## Instructions
 
-Insure that python 3 and all dependencies are installed
+Insure that python 3 and all dependencies are installed.
 
 Run main.py
 

@@ -23,13 +23,13 @@ from StockTicker.DataFetcher import add_ticker
 from StockTicker.AdvancedMenu import open_adv_menu
 from StockTicker.Details import open_details
 
-
+# Opens the menu when the menu button is pressed in the ticker tape
 def open_menu(root):
     class StockMenu(tk.Tk):
         def __init__(self, *args, **kwargs):
             tk.Tk.__init__(self, *args, **kwargs)
 
-            # load ticker_list data
+            # Load ticker_list data
             self.ticker_list = pull_ticker_list()
             # if indiviudal string is imported, convert to array
             if not isinstance(self.ticker_list, list):
@@ -53,46 +53,47 @@ def open_menu(root):
             self.del_buttons = {}
             self.detail_buttons = {}
 
-            # update menu
+            # Update menu
             self.update_display(root)
 
-        # clears all ticker symbols from menu
+        # Clears all ticker symbols from menu
         def clear(self):
             for x in self.grid_slaves():
                 if int(x.grid_info()["row"]) > 2:
                     x.grid_forget()
 
-        # deletes a single symbol at given row
+        # Deletes a single symbol at given row
         def del_stock(self, row, root):
             remove_ticker(self.ticker_list[row])
             del self.ticker_list[row]
             self.update_display(root)  # update list
             root.refresh_data()
 
+        # Opens the details menu for the selected stock
         def details(self, stock):
             open_details(stock)
 
-        # clears all ticker symbols, adds all symbols stored in ticker_list to menu, and resizes menu
+        # Clears all ticker symbols, adds all symbols stored in ticker_list to menu, and resizes menu
         def update_display(self, root):
-            # clear all symbols
+            # Clear all symbols
             self.clear()
 
-            # add symbols stored in ticker_list
+            # Add symbols stored in ticker_list
             for x in range(len(self.ticker_list)):
-                # add symbol
+                # Add symbol
                 new_stock = tk.Label(self, text=self.ticker_list[x])
                 self.stocks[x] = new_stock
                 self.stocks[x].grid(row=x + 3, column=0)
-                # add delete button
+                # Add delete button
                 del_button = tk.Button(self, text="Remove", command=lambda row=x: self.del_stock(row, root))
                 self.del_buttons[x] = del_button
                 self.del_buttons[x].grid(row=x + 3, column=1)
-                # add details button
+                # Add details button
                 detail_button = tk.Button(self, text="Details", command=lambda row=x: self.details(self.ticker_list[row]))
                 self.detail_buttons[x] = detail_button
                 self.detail_buttons[x].grid(row=x + 3, column=2)
 
-            # resize menu for new row
+            # Resize menu for new row
             user32 = ctypes.windll.user32
             height = 85 + len(self.ticker_list) * 25
             screen_size = '185x' + str(height)
@@ -100,12 +101,11 @@ def open_menu(root):
                 user32.GetSystemMetrics(1) - height - 95)
             self.geometry(screen_size + screen_position)
 
-        # get user input from inputBox, add ticker symbol to ticker_list, and save data
+        # Get user input from inputBox, add ticker symbol to ticker_list, and save data
         def add_ticker(self, root):
-            # get input from textbox
             ticker = self.input_box.get()
 
-            # add symbol to ticker list if not blank or already in ticker list
+            # Add symbol to ticker list if not blank or already in ticker list
             if ticker != "" and ticker not in self.ticker_list:
                 self.ticker_list.append(ticker)
                 self.input_box.delete(0, tk.END)
@@ -116,6 +116,7 @@ def open_menu(root):
                 # Refresh Data
                 root.refresh_data()
 
+        # Opens the advanced menu
         def open_advanced(self):
             open_adv_menu()
 

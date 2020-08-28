@@ -31,7 +31,7 @@ def load_settings():
     settings.close()
     return data
 
-
+# Opens the advanced menu, when the corresponding button is pressed in the menu
 def open_adv_menu():
     class adv_menu(tk.Tk):
         def __init__(self, *args, **kwargs):

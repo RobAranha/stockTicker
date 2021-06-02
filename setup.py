@@ -49,7 +49,7 @@ setup(
         'pytz==2020.1',
         'requests==2.23.0',
         'six==1.14.0',
-        'urllib3==1.25.9',
+        'urllib3==1.26.5',
         'yfinance==0.1.54',
         'zope.interface==5.1.0'
     ],

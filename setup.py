@@ -40,7 +40,7 @@ setup(
         'chardet==3.0.4',
         'DateTime==4.3',
         'idna==2.9',
-        'lxml==4.5.0',
+        'lxml==4.6.5',
         'multitasking==0.0.9',
         'numpy==1.18.4',
         'pandas==1.0.3',

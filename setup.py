@@ -36,7 +36,7 @@ setup(
     license='Apache',
     python_requires='>=3.4',
     install_requires=[
-        'certifi==2020.4.5.1',
+        'certifi==2022.12.7',
         'chardet==3.0.4',
         'DateTime==4.3',
         'idna==2.9',
